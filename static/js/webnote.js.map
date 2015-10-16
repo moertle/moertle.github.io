@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "webnote.js",
+  "sourceRoot": "../../../apps/webnote",
+  "sources": [
+    "src/webnote.litcoffee"
+  ],
+  "names": [],
+  "mappings": ";AACI;EAAA,CAAA,CAAE,QAAF,CAAW,CAAC,KAAZ,CAAkB,SAAA;WACd,OAAO,CAAC,GAAR,CAAY,OAAZ;EADc,CAAlB;AAAA"
+}
