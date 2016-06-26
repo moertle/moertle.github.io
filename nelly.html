@@ -5,7 +5,6 @@
   <link type="text/css" rel="stylesheet" href="/static/css/bootstrap.min.css" />
   <link type="text/css" rel="stylesheet" href="/static/css/bootstrap-theme.min.css" />
   <link type="text/css" rel="stylesheet" href="/static/css/font-awesome.min.css" />
-  <link type="text/css" rel="stylesheet" href="/static/css/oertle.css" />
 </head>
 <body>
   <div class="container">
@@ -16,6 +15,7 @@
 <pre>pip install nelly
 </pre>
 
+<h3>Simple Example</h3>
 <pre>&lt;%pre
     import sys
 %&gt;
@@ -29,35 +29,28 @@
     print $$
 %&gt;</pre>
 
-
-<a id="CONSTANTS" />
+<a id="CONSTANTS"></a>
 <h3>Constants</h3>
 <p>Constants in productions can consist of double-quoted strings, single-quoted strings, decimal, hexadecimal, or octal numbers.</p>
 <pre>
 A: "A" | 'A' | 65 | 0x41 | 0101;
 </pre>
 
-<br />
-
-<a id="CONCATENATION" />
+<a id="CONCATENATION"></a>
 <h3>Concatenation</h3>
 <p>Productions are concatenated when they are seperated by white-space.</p>
 <pre>
 CONCAT: "CONC" 0x41 "TEN" 65 "TION";
 </pre>
 
-<br />
-
-<a id="SELECTION" />
+<a id="SELECTION"></a>
 <h3>Selection</h3>
 <p>When multiple productions are present one is chosen at random.</p>
 <pre>
 NUMBER: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
 </pre>
 
-<br />
-
-<a id="GROUPING" />
+<a id="GROUPING"></a>
 <h3>Grouping</h3>
 <p></p>
 <pre>
@@ -65,9 +58,7 @@ GRP: ('A'|'B') ('C'|'D');
 </pre>
 <p>Possible values are 'AC', 'AD', 'BC', or 'BD'.</p>
 
-<br />
-
-<a id="RANGES" />
+<a id="RANGES"></a>
 <h3>Ranges</h3>
 <p></p>
 <pre>
@@ -76,9 +67,7 @@ NUM2: ('0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9'){1,5};
 </pre>
 <p>NUM1 will generate a 3-digit number while NUM2 will generate a number of random length between 1 and 5 digits.</p>
 
-<br />
-
-<a id="SLICING" />
+<a id="SLICING"></a>
 <h3>Slicing</h3>
 <p>A sub-string of a production can be referenced using indices.</p>
 <pre>
@@ -94,9 +83,7 @@ SLICE9: "0123456789" [2:-2]; // 234567
 </pre>
 <p>The output of each production is documented in the comment proceeding it.</p>
 
-<br />
-
-<a id="INLINEPYTHON" />
+<a id="INLINEPYTHON"></a>
 <h3>Inline Python</h3>
 <p></p>
 <pre>&lt;%pre
@@ -107,9 +94,7 @@ NT: %base64.b64encode('string');
 </pre>
 <p></p>
 
-<br />
-
-<a id="NONTERMINALS" />
+<a id="NONTERMINALS"></a>
 <h3>Non-Terminals</h3>
 <p></p>
 <pre>
@@ -117,20 +102,16 @@ NT1: "The value of NT2 is " NT2;
 NT2: "substitution";
 </pre>
 
-<br />
-
-<a id="SEMANTICACTIONS" />
+<a id="SEMANTICACTIONS"></a>
 <h3>Semantic Actions</h3>
 <p>$$</p>
 <pre>
 PSA1: PSA2 &lt;% var = $$ %&gt;;
 PSA2: "one" | "two";
 </pre>
-<p>In this example the Python variable <b>var</b> will contain either 'one' or 'two' for future use.</p>
+<p>In this example PSA1 and the Python variable <b>var</b> will contain either 'one' or 'two' for future use.</p>
 
-<br />
-
-<a id="VARIABLENONTERMINALS" />
+<a id="VARIABLENONTERMINALS"></a>
 <h3>Variable Non-Terminals</h3>
 <p>$*</p>
 <pre>
@@ -144,9 +125,7 @@ $NT2:
   ;
 </pre>
 
-<br />
-
-<a id="BACKREFERENCE" />
+<a id="BACKREFERENCE"></a>
 <h3>Back Reference</h3>
 <p></p>
 <pre>
