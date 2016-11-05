@@ -8,7 +8,7 @@ import shutil
 import subprocess
 import time
 
-__version__ = '0.3'
+__version__ = '0.4'
 
 DEFAULT_USER = 'clig'
 
@@ -22,6 +22,8 @@ class Clig:
         parser.add_argument('--remote', '-r', help='Remote host')
         parser.add_argument('--user', '-u', default=DEFAULT_USER, help='Remote user')
         parser.add_argument('--version', '-v', action='store_true', help='Print version')
+        # Git
+        p_git = subparsers.add_parser('git')
         # Create
         p_create = subparsers.add_parser('create')
         p_create.add_argument('name')
@@ -35,7 +37,7 @@ class Clig:
         p_clone = subparsers.add_parser('backup')
         p_clone.add_argument('host')
 
-        self.args = parser.parse_args()
+        self.args,self.var = parser.parse_known_args()
         if self.args.version:
             print(__version__)
             return
@@ -59,19 +61,28 @@ class Clig:
         if out is not None:
             return out
 
-    def _cmd_default(self):
+    def _cmd_git(self):
         base = os.path.abspath('.')
-        fmt = ' %%-%ds' % (shutil.get_terminal_size().columns - 1)
+        #fmt = ' %%-%ds' % (shutil.get_terminal_size().columns - 1)
+        fmt = '-' * (shutil.get_terminal_size().columns)# - 1)
         for root,directories,filenames in os.walk(base):
             if not '.git' in directories:
                 continue
             name = root[len(base)+1:]
             if name:
-                sys.stdout.write('\x1b[1;44;37m')
-                sys.stdout.write(fmt % name)
-                sys.stdout.write('\x1b[0m\n')
+                sys.stdout.write('\x1b[34m')
+                sys.stdout.write(fmt + '\r--- ')
+                sys.stdout.write('\x1b[1;35m')
+                sys.stdout.write(name)
+                sys.stdout.write(' \x1b[0m\n')
             os.chdir(root)
-            self._call('git status -s', stdout=None, stderr=None)
+            #print('git', root, self.var)
+            self._call('git %s', ' '.join(self.var), stdout=None, stderr=None)
+        return
+
+    def _cmd_default(self):
+        self.var = ['status', '-s']
+        self._cmd_git()
         return
 
     def _cmd_create(self):
