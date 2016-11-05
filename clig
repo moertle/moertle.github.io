@@ -57,21 +57,19 @@ class Clig:
             )
         out,err = process.communicate()
         if out is not None:
-            return out.decode('utf-8')
+            return out
 
     def _cmd_default(self):
         base = os.path.abspath('.')
-        fmt = '%%-%ds' % shutil.get_terminal_size().columns
+        fmt = ' %%-%ds' % (shutil.get_terminal_size().columns - 1)
         for root,directories,filenames in os.walk(base):
             if not '.git' in directories:
                 continue
-            #name = os.path.join(root, directory)
             name = root[len(base)+1:]
-            sys.stdout.write('\x1b[1;44;37m')
-            sys.stdout.write(fmt % name)
-            sys.stdout.write('\x1b[0m')
-            sys.stdout.write('\n')
-            #print('\x1b[1;45;37m ' + name + ' \x1b[0m')
+            if name:
+                sys.stdout.write('\x1b[1;44;37m')
+                sys.stdout.write(fmt % name)
+                sys.stdout.write('\x1b[0m\n')
             os.chdir(root)
             self._call('git status -s', stdout=None, stderr=None)
         return
@@ -107,7 +105,7 @@ class Clig:
             self.args.user,
             self.args.host,
             )
-        repos = out.strip().split('\n')
+        repos = out.decode('utf-8').strip().split('\n')
         current_dir = os.getcwd()
         for repo in repos:
             dirname, gitname = os.path.split(repo)
@@ -133,7 +131,7 @@ class Clig:
             self.args.user,
             self.args.host,
             )
-        out = out.strip().split('\n')
+        out = out.decode('utf-8').strip().split('\n')
         sys.stdout.write('\033[32mBacking up '+str(len(out))+' repositories\033[0m\n')
         paths = ' '.join(out)
         tar = self._call('ssh %s@%s tar zcpf - %s',
