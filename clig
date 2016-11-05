@@ -6,8 +6,9 @@ import argparse
 import shlex
 import shutil
 import subprocess
+import time
 
-__version__ = '0.2'
+__version__ = '0.3'
 
 DEFAULT_USER = 'clig'
 
@@ -30,6 +31,9 @@ class Clig:
         # Clone
         p_clone = subparsers.add_parser('clone')
         p_clone.add_argument('host')
+        # Backup
+        p_clone = subparsers.add_parser('backup')
+        p_clone.add_argument('host')
 
         self.args = parser.parse_args()
         if self.args.version:
@@ -37,7 +41,7 @@ class Clig:
             return
 
         if not self.args.command:
-            self.args.command = 'sh'
+            self.args.command = 'default'
 
         fn_command = getattr(self, '_cmd_'+self.args.command)
         fn_command()
@@ -55,11 +59,9 @@ class Clig:
         if out is not None:
             return out.decode('utf-8')
 
-    def _cmd_sh(self):
+    def _cmd_default(self):
         base = os.path.abspath('.')
-
         fmt = '%%-%ds' % shutil.get_terminal_size().columns
-
         for root,directories,filenames in os.walk(base):
             if not '.git' in directories:
                 continue
@@ -72,6 +74,7 @@ class Clig:
             #print('\x1b[1;45;37m ' + name + ' \x1b[0m')
             os.chdir(root)
             self._call('git status -s', stdout=None, stderr=None)
+        return
 
     def _cmd_create(self):
         if self.args.host:
@@ -92,10 +95,12 @@ class Clig:
             if not os.path.isdir(gitname):
                 self._call('git init --bare %s', gitname)
             os.chdir(current_dir)
+        return
 
     def _cmd_list(self):
         for name in self._list():
             print(name)
+        return
 
     def _cmd_clone(self):
         out = self._call('ssh %s@%s clig list',
@@ -112,7 +117,7 @@ class Clig:
             check = gitname
             if check.endswith('.git'):
                 check = check[:-4]
-            sys.stdout.write('\x1b[32m' + os.path.join(dirname, gitname) + '\x1b[0m\n')
+            sys.stdout.write('\033[32m' + os.path.join(dirname, gitname) + '\033[0m\n')
             if not os.path.isdir(check):
                 out = self._call('git clone %s@%s:%s',
                     self.args.user,
@@ -121,6 +126,25 @@ class Clig:
                     )
                 sys.stdout.write(out)
             os.chdir(current_dir)
+        return
+
+    def _cmd_backup(self):
+        out = self._call('ssh %s@%s clig list',
+            self.args.user,
+            self.args.host,
+            )
+        out = out.strip().split('\n')
+        sys.stdout.write('\033[32mBacking up '+str(len(out))+' repositories\033[0m\n')
+        paths = ' '.join(out)
+        tar = self._call('ssh %s@%s tar zcpf - %s',
+            self.args.user,
+            self.args.host,
+            paths,
+            )
+        path = 'git-%s-%s.tar.gz' % (self.args.host, time.strftime('%Y-%m-%d_%H%M%S'))
+        with open(path, 'wb') as fp:
+            fp.write(tar)
+        return
 
     def _list(self):
         base = os.path.abspath('.')
