@@ -16,26 +16,37 @@ class Clig:
     def __init__(self):
         # Top-level argument parser
         parser = argparse.ArgumentParser()
+
         # Sub-parser for commands
         subparsers = parser.add_subparsers(dest='command', help='available commands')
+
         # Global options
         parser.add_argument('--remote', '-r', help='Remote host')
         parser.add_argument('--user', '-u', default=DEFAULT_USER, help='Remote user')
         parser.add_argument('--version', '-v', action='store_true', help='Print version')
+
         # Git
-        p_git = subparsers.add_parser('git')
+        subparser = subparsers.add_parser('git')
+
         # Create
-        p_create = subparsers.add_parser('create')
-        p_create.add_argument('name')
-        p_create.add_argument('host', nargs='?', default=None)
+        subparser = subparsers.add_parser('create')
+        subparser.add_argument('name')
+        subparser.add_argument('host', nargs='?', default=None)
+
         # List
-        p_list = subparsers.add_parser('list')
+        subparser = subparsers.add_parser('list')
+        subparser.add_argument('--remote', action='store_true')
+
         # Clone
-        p_clone = subparsers.add_parser('clone')
-        p_clone.add_argument('host')
+        subparser = subparsers.add_parser('clone')
+        subparser.add_argument('host')
+
         # Backup
-        p_clone = subparsers.add_parser('backup')
-        p_clone.add_argument('host')
+        subparser = subparsers.add_parser('backup')
+        subparser.add_argument('host')
+
+        # Update
+        subparser = subparsers.add_parser('update')
 
         self.args,self.var = parser.parse_known_args()
         if self.args.version:
@@ -66,7 +77,7 @@ class Clig:
         #fmt = ' %%-%ds' % (shutil.get_terminal_size().columns - 1)
         fmt = '-' * (shutil.get_terminal_size().columns)# - 1)
         for root,directories,filenames in os.walk(base):
-            if not '.git' in directories:
+            if '.git' not in directories:
                 continue
             name = root[len(base)+1:]
             if name:
@@ -107,8 +118,19 @@ class Clig:
         return
 
     def _cmd_list(self):
-        for name in self._list():
-            print(name)
+        base = os.path.abspath('.')
+        for root,directories,filenames in os.walk(base):
+            for directory in directories:
+                if self.args.remote:
+                    print('????')
+                    if not directory.endswith('.git'):
+                        continue
+                else:
+                    if '.git' not in directories:
+                        continue
+                name = os.path.join(root, directory)
+                name = name[len(base)+1:]
+                print(name)
         return
 
     def _cmd_clone(self):
@@ -133,12 +155,12 @@ class Clig:
                     self.args.host,
                     os.path.join(dirname, gitname),
                     )
-                sys.stdout.write(out)
+                sys.stdout.buffer.write(out)
             os.chdir(current_dir)
         return
 
     def _cmd_backup(self):
-        out = self._call('ssh %s@%s clig list',
+        out = self._call('ssh %s@%s clig list --remote',
             self.args.user,
             self.args.host,
             )
@@ -154,16 +176,6 @@ class Clig:
         with open(path, 'wb') as fp:
             fp.write(tar)
         return
-
-    def _list(self):
-        base = os.path.abspath('.')
-        for root,directories,filenames in os.walk(base):
-            for directory in directories:
-                if not directory.endswith('.git'):
-                    continue
-                name = os.path.join(root, directory)
-                name = name[len(base)+1:]
-                yield name
 
 
 if '__main__' == __name__:
