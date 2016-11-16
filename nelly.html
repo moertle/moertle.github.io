@@ -2,17 +2,24 @@
 <html>
 <head>
   <title>Nelly</title>
-  <link type="text/css" rel="stylesheet" href="/static/css/bootstrap.min.css" />
-  <link type="text/css" rel="stylesheet" href="/static/css/bootstrap-theme.min.css" />
-  <link type="text/css" rel="stylesheet" href="/static/css/font-awesome.min.css" />
+  <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+  <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <style><!--
+body { background: #f8f8f8; }
+h1 { color: #036; }
+h3 { color: #369; }
+  --></style>
 </head>
 <body>
   <div class="container">
 
   <h1>Nelly</h1>
 
+<a href="https://github.com/moertle/nelly"><span class="fa fa-github"></span> GitHub</a>
+
 <h3>Installation</h3>
-<pre>pip install nelly
+<pre>$ pip install nelly
 </pre>
 
 <h3>Simple Example</h3>
@@ -20,7 +27,7 @@
     import sys
 %&gt;
 
-::NT(start)
+<b>::NT</b>(start)
     : 'A' # comment
     | 'B' &lt;% print $$ %&gt;
     ;
@@ -33,37 +40,37 @@
 <h3>Constants</h3>
 <p>Constants in productions can consist of double-quoted strings, single-quoted strings, decimal, hexadecimal, or octal numbers.</p>
 <pre>
-A: "A" | 'A' | 65 | 0x41 | 0101;
+<b>A</b>: "A" | 'A' | 65 | 0x41 | 0101;
 </pre>
 
 <a id="CONCATENATION"></a>
 <h3>Concatenation</h3>
 <p>Productions are concatenated when they are seperated by white-space.</p>
 <pre>
-CONCAT: "CONC" 0x41 "TEN" 65 "TION";
+<b>CONCAT</b>: "CONC" 0x41 "TEN" 65 "TION";
 </pre>
-
+<p>The generated output is <code>CONCATENATION</code></p>
 <a id="SELECTION"></a>
 <h3>Selection</h3>
 <p>When multiple productions are present one is chosen at random.</p>
 <pre>
-NUMBER: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
+<b>NUMBER</b>: '0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9';
 </pre>
 
 <a id="GROUPING"></a>
 <h3>Grouping</h3>
 <p></p>
 <pre>
-GRP: ('A'|'B') ('C'|'D');
+<b>GRP</b>: ('A'|'B') ('C'|'D');
 </pre>
-<p>Possible values are 'AC', 'AD', 'BC', or 'BD'.</p>
+<p>Possible values are <code>AC</code>, <code>AD</code>, <code>BC</code>, or <code>BD</code>.</p>
 
 <a id="RANGES"></a>
 <h3>Ranges</h3>
 <p></p>
 <pre>
-NUM1: ('0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9'){3};
-NUM2: ('0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9'){1,5};
+<b>NUM1</b>: ('0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9'){3};
+<b>NUM2</b>: ('0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9'){1,5};
 </pre>
 <p>NUM1 will generate a 3-digit number while NUM2 will generate a number of random length between 1 and 5 digits.</p>
 
@@ -71,15 +78,15 @@ NUM2: ('0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9'){1,5};
 <h3>Slicing</h3>
 <p>A sub-string of a production can be referenced using indices.</p>
 <pre>
-SLICE1: "0123456789" [:];    // 0123456789
-SLICE2: "0123456789" [4];    // 4
-SLICE3: "0123456789" [:4];   // 0123
-SLICE4: "0123456789" [4:];   // 456789
-SLICE5: "0123456789" [2:8];  // 234567
-SLICE6: "0123456789" [-4];   // 6
-SLICE7: "0123456789" [-4:];  // 6789
-SLICE8: "0123456789" [:-4];  // 012345
-SLICE9: "0123456789" [2:-2]; // 234567
+<b>SLICE1</b>: "0123456789" [:];    // 0123456789
+<b>SLICE2</b>: "0123456789" [4];    // 4
+<b>SLICE3</b>: "0123456789" [:4];   // 0123
+<b>SLICE4</b>: "0123456789" [4:];   // 456789
+<b>SLICE5</b>: "0123456789" [2:8];  // 234567
+<b>SLICE6</b>: "0123456789" [-4];   // 6
+<b>SLICE7</b>: "0123456789" [-4:];  // 6789
+<b>SLICE8</b>: "0123456789" [:-4];  // 012345
+<b>SLICE9</b>: "0123456789" [2:-2]; // 234567
 </pre>
 <p>The output of each production is documented in the comment proceeding it.</p>
 
@@ -90,7 +97,7 @@ SLICE9: "0123456789" [2:-2]; // 234567
     import base64
 %&gt;
 
-NT: %base64.b64encode('string');
+<b>NT</b>: %base64.b64encode('string');
 </pre>
 <p></p>
 
@@ -98,16 +105,16 @@ NT: %base64.b64encode('string');
 <h3>Non-Terminals</h3>
 <p></p>
 <pre>
-NT1: "The value of NT2 is " NT2;
-NT2: "substitution";
+<b>NT1</b>: "The value of NT2 is " NT2;
+<b>NT2</b>: "substitution";
 </pre>
 
 <a id="SEMANTICACTIONS"></a>
 <h3>Semantic Actions</h3>
 <p>$$</p>
 <pre>
-PSA1: PSA2 &lt;% var = $$ %&gt;;
-PSA2: "one" | "two";
+<b>PSA1</b>: PSA2 &lt;% var = $$ %&gt;;
+<b>PSA2</b>: "one" | "two";
 </pre>
 <p>In this example PSA1 and the Python variable <b>var</b> will contain either 'one' or 'two' for future use.</p>
 
@@ -115,9 +122,9 @@ PSA2: "one" | "two";
 <h3>Variable Non-Terminals</h3>
 <p>$*</p>
 <pre>
-NT1: $NT2;
+<b>NT1</b>: $NT2;
 
-$NT2:
+<b>$NT2</b>:
   "I WILL BE SUBSTITUTED INTO NT1 IN LOWERCASE"
   &lt;%
     $* = $$.lower()
@@ -129,14 +136,14 @@ $NT2:
 <h3>Back Reference</h3>
 <p></p>
 <pre>
-BR: "A" | "B";
-NT: BR \BR;
+<b>BR</b>: "A" | "B";
+<b>NT</b>: BR \BR;
 </pre>
 <pre>
-$BR: ("a"|"b") &lt;% $* = $$.upper() %&gt;;
-NT: $BR \$BR;
+<b>$BR</b>: ("a"|"b") &lt;% $* = $$.upper() %&gt;;
+<b>NT</b>: $BR \$BR;
 </pre>
-<p>NT will generate the string 'AA' or 'BB' but not 'AB' or 'BA'.</p>
+<p>NT will generate the string <code>AA</code> or <code>BB</code> but not <code>AB</code> or <code>BA</code>.</p>
 
 </div>
 
